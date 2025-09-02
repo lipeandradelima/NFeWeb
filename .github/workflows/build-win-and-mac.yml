@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # Você pode ajustar a versão do Python se necessário
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
@@ -28,7 +28,7 @@ jobs:
         pyinstaller --onefile --windowed --name="Automacao_NFe_FSist" teste_web.py
 
     - name: Upload Windows artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4 # <-- UPDATED FROM v3
       with:
         name: Automacao_NFe_FSist-Windows
         path: dist/Automacao_NFe_FSist.exe
@@ -43,7 +43,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # Você pode ajustar a versão do Python se necessário
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
@@ -61,7 +61,7 @@ jobs:
         cd ..
 
     - name: Upload macOS artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4 # <-- UPDATED FROM v3
       with:
         name: Automacao_NFe_FSist-macOS
         path: Automacao_NFe_FSist-macOS.zip
