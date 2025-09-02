@@ -6,8 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
 
     steps:
     - name: Checkout repository
@@ -21,47 +24,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pandas selenium webdriver-manager pyinstaller
+        # 1. ADICIONADO 'openpyxl' À INSTALAÇÃO
+        pip install pandas selenium webdriver-manager pyinstaller openpyxl
 
     - name: Build executable with PyInstaller
       run: |
-        pyinstaller --onefile --windowed --name="Automacao_NFe_FSist" teste_web.py
+        # 2. ADICIONADO O ARGUMENTO --hidden-import
+        pyinstaller --onefile --windowed --name="Automacao_NFe_FSist" --hidden-import=openpyxl teste_web.py
 
-    - name: Upload Windows artifact
-      uses: actions/upload-artifact@v4 # <-- UPDATED FROM v3
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: Automacao_NFe_FSist-Windows
-        path: dist/Automacao_NFe_FSist.exe
-
-  build-mac:
-    runs-on: macos-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas selenium webdriver-manager pyinstaller
-
-    - name: Build application with PyInstaller
-      run: |
-        pyinstaller --onefile --windowed --name="Automacao_NFe_FSist" teste_web.py
-
-    - name: Create .zip for macOS app
-      run: |
-        cd dist
-        zip -r ../Automacao_NFe_FSist-macOS.zip Automacao_NFe_FSist.app
-        cd ..
-
-    - name: Upload macOS artifact
-      uses: actions/upload-artifact@v4 # <-- UPDATED FROM v3
-      with:
-        name: Automacao_NFe_FSist-macOS
-        path: Automacao_NFe_FSist-macOS.zip
+        name: Automacao_NFe_FSist-${{ matrix.os }}
+        path: dist/
